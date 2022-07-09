@@ -1,2 +1,10 @@
 # Trabajo
-Trabajo is a Job listing site for specific software industry positions.
+
+## setup
+
+install it;
+
+```pip3 install -r requirements.txt```
+
+run it:
+python start.py
