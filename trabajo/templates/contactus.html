@@ -1,0 +1,136 @@
+{% extends './base.html'%}
+{% block header %}
+<div class="py-4 text-start py-3">
+    <h4>Contact Us</h4>
+    <small>TRABAJO JOBS</small>
+</div>
+{% endblock %}
+{% block content%}
+<div class="row">
+    <div class="col-4 bg-info text-light">
+      <h4 class="p-2">Contact Information
+      </h4>
+      <div class="text-muted text-start p-2">
+        <p>
+            <i class="bi bi-geo-alt text-light"></i>
+            <small class="text-light">
+              Dire Dawa, Ethiopia
+            </small>
+        </p>
+        <p>
+            <i class="bi bi-telephone text-light"></i>
+            <small class="text-light">
+               +251 925 012 908
+            </small>
+        </p>
+        <p>
+            <i class="bi bi-envelope text-light"></i>
+            <small class="text-light">
+              daniel123_86@live.com | obedamoako92@gmail.com
+            </small> 
+            <small class="text-light">
+              daniel123_86@live.com
+            </small>
+        </p>
+        <p>
+            <i class="bi bi-globe text-light"></i>
+            <small class="text-light">
+                <a href="https://daniel-bee.github.io/cv/" target="_blank">Daniel</a>
+            </small>
+        </p>
+
+    </div>
+    <div class="fs-2 pb-3 border-top pt-2">
+      <a href="https://github.com/Daniel-bee/trabajo" target="_blank"><i class="bi bi-github text-light"></i></a>
+      <a href="#" target="_blank"><i class="bi bi-facebook text-light"></i></a>
+      <a href="#" target="_blank"><i class="bi bi-twitter text-light"></i></a>
+      <a href="#" target="_blank"><i class="bi bi-linkedin text-light"></i></a>
+  </div>
+  </div>
+    <div class="col-8 p-2 bg-white">
+        <h4 class="ps-2">We want to hear form you!</h4>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <i class="bi bi-check2-circle"></i> {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <form class="row g-3 p-3" method="POST" action="{{url_for('contactus')}}" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="col-6">
+               
+                {% if form.name.errors %}
+                  {{ form.name(class="form-control is-invalid", placeholder="Your Name") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.name.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.name(class="form-control", placeholder="Your Name") }}
+                {% endif %}
+              </div>
+              <div class="col-6">
+              
+                {% if form.subject.errors %}
+                  {{ form.subject(class="form-control is-invalid", placeholder="Subject") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.subject.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.subject(class="form-control", placeholder="Subject") }}
+                {% endif %}
+              </div>
+                <div class="col-6">
+
+                {% if form.email.errors %}
+                  {{ form.email(class="form-control is-invalid", placeholder="Your Email") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.email(class="form-control", placeholder="Your Email") }}
+                {% endif %}
+              </div>
+              <div class="col-6">
+
+                {% if form.phone_number.errors %}
+                  {{ form.phone_number(class="form-control is-invalid", placeholder="Phone Number") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.phone_number.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.phone_number(class="form-control", placeholder="Phone Number") }}
+                {% endif %}
+              </div>
+              <div class="col-12">
+                {% if form.message.errors %}
+                  {{ form.message(class="form-control is-invalid", rows=5, placeholder="Message") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.message.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.message(class="form-control" , rows=5, placeholder="Message") }}
+                {% endif %}
+              </div>
+  
+              <div class="col-6">
+                {{ form.submit(class="btn btn-info")}}
+              </div>
+  
+            </form>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends './base.html'%}
+{% block header %}
+    <div class="py-4 text-start mt-3">
+        <h3>Resume</h3>
+        <h6>{{ current_user.first_name|capitalize}} 
+          {{ current_user.last_name|capitalize}}
+        </h6>
+    </div>
+{% endblock%}
+{% block profile %}
+<div class="text-muted mb-3">
+  <h5>My Resume</h5>
+  <hr>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+<div class="card border-0 p-3">
+  <form class="row g-3" method="POST" enctype='multipart/form-data' action="{{ url_for('resumeUpload', userid=current_user.id) }}" novalidate >
+    {{ form.hidden_tag() }}
+    {% if resume not in ['']%}
+    <div class="col-md-12">
+     
+      {{ form.resume.label(class="form-label")}}<br>
+      <i class="bi bi-file-earmark-pdf-fill text-danger"></i> {{resume}}
+      {% if form.resume.errors %}
+      {{ form.resume(class="form-control is-invalid")}}
+      <div class="invalid-feedback">
+        {% for error in form.resume.errors %}
+            {{error}}
+        {% endfor %}
+      </div>
+      {% else %}
+       {{ form.resume(class="form-control")}}
+      {% endif %}
+
+
+    </div>
+    <div class="col-12">
+      {{ form.submit(class="btn btn-outline-info")}}
+    </div>
+    {%else%}
+    <p class="text-warning">
+      <strong>
+      <i class="bi bi-exclamation-triangle-fill"></i> 
+      Please Complete your profile detail to upload your resume.
+    </p>
+    </strong>
+    {% endif %}
+  </form>
+<hr>
+<iframe src="{{url_for('static', filename='/resume/'+resume)}}" width="100%" height="500px">
+</iframe>
+</div>
+{% endblock %}

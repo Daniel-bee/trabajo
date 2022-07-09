@@ -1,0 +1,122 @@
+{% extends './base.html' %}
+{% block header %}
+    <div class="py-4 text-start">
+        <h3>{{employerName}}</h3>
+    </div>
+{% endblock header%}
+{% block content %}
+<div class="row">
+    <div class="col-9 mt-3">
+      <h5 class="text-primary">Total {{jobposts.total}}</h5>
+      <hr>
+        {% for jobpost in jobposts.items%}
+        <div class="card joblistcard">
+            <div class="card-body px-2">
+                <div class="row">
+                    <div class="col-2 d-flex align-items-center">
+                        <img class="img-fluid border  p-1 mx-3" src="{{url_for('static', filename='profile_pics/'+jobpost.user.image_file)}}" alt="" style="width:65px; height: 65px;">
+                    </div>
+                    <div class="col-8">
+                        <div>
+                          {% if jobpost.work_from %}
+                          <span class="text-secondary fs-4" role="status" data-toggle="tooltip" data-bs-placement="left" title="Remote">
+                            <i class="bi bi-person-workspace"></i>
+                          </span>
+                          
+                          {%endif%}
+                            <a href="{{ url_for('jobdetail', postid=jobpost.id)}}" class="link-primary h5 posttitle">{{ jobpost.job_title}}</a>
+                        </div>
+                        <ul class="list-inline mt-3">
+                            <li class="list-inline-item text-secondary list">
+                              
+                                <small><i class="bi bi-funnel"></i> {{jobpost.qualification}}</small>
+                            </li>
+                            <li class="list-inline-item text-secondary list">
+                                <small><i class="bi bi-calendar2"></i> published: {{jobpost.created_at.strftime('%Y-%B-%d')}}</small>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-2 d-flex align-items-center px-2">
+                        <div>
+                              <span class="badged rounded-pill">{{ jobpost.job_type }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endfor%}
+        {% if jobposts.page %}
+        <nav aria-label="Page navigation ">
+          <ul class="pagination justify-content-end py-3">
+            <li class="page-item {% if jobposts.page == 1 %}disabled{% endif %}">
+              <a href="{{ url_for('companyJobPost', page=jobposts.prev_num, companyName=employerName) }}" class="page-link">&laquo;</a>
+            </li>
+            
+              {% for page_num in jobposts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+              {% if page_num %}
+                {% if jobposts.page == page_num %}
+                  <li class="page-item"><a class="page-link active" href="{{ url_for('companyJobPost', page=page_num, companyName=employerName) }}">{{ page_num }}</a></li>
+                {% else %}
+                  <li class="page-item"><a class="page-link" href="{{ url_for('companyJobPost', page=page_num, companyName=employerName) }}">{{ page_num }}</a></li>
+                {% endif %}
+              {% else %}
+                ...
+              {% endif %}
+              {% endfor %}
+            
+            <li class="page-item {% if jobposts.page == jobposts.pages %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('companyJobPost', page=jobposts.next_num, companyName=employerName) }}">&raquo;</a>
+            </li>
+          </ul>
+        </nav>
+        {% endif %}
+    </div>
+    <div class="col mt-3 border-start">
+
+    <div class="card py-2 rightcard">
+      <h5 class="mb-2 ps-3">Job Type</h5>
+
+      <ol class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Remote</div>
+          </div>
+          <span class="badged">{{sidemenu.remote}}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Freelance</div>
+          </div>
+          <span class="badged">{{sidemenu.freelance}}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Full Time</div>
+          </div>
+          <span class="badged">{{sidemenu.fulltime}}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Part Time</div>
+          </div>
+          <span class="badged">{{sidemenu.parttime}}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Internship</div>
+          </div>
+          <span class="badged">{{sidemenu.internship}}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Temporary</div>
+          </div>
+          <span class="badge bg-primary rounded-pill">{{sidemenu.temporary}}</span>
+        </li>
+      </ol>
+  </div>
+    </div>
+</div>
+
+{% endblock %}

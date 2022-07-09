@@ -1,0 +1,144 @@
+{% extends './base.html'%}
+{% block header %}
+    <div class="py-4 text-start my-3">
+        <h3>Manage Jobs</h3>
+        <h6>{{ current_user.company_name|capitalize}}</h6>
+    </div>
+{% endblock%}
+{% block profile %}
+<div class="text-muted mb-3">
+  <h5><i class="bi bi-briefcase fs-5"></i> Manage Jobs</h5>
+  <hr>
+</div>
+<div class="card my-3 border-info">
+    <div class="d-flex justify-content-evenly p-4">
+        <div class="co-3"><i class="bi bi-sticky text-warning fs-4"></i>
+            {{jobposts|length}} Job Posted
+        </div>
+        <div class="co-3"><i class="bi bi-people text-warning fs-4"></i>
+            {% if employer.total_follower >1 %}
+                {{employer.total_follower}} Followers
+            {%else%}
+                {{employer.total_follower}} Follower
+            {%endif%}
+        </div>
+        <div class="co-3"><i class="bi bi-binoculars fs-4 text-warning"></i></i> {{employer.total_view}} views</div>
+        <div class="co-3"><i class="bi bi-calendar2-check fs-4 text-warning"></i>
+            {% if employer.active_jobs >1 %}
+                {{employer.active_jobs}} Active Jobs
+            {%else%}
+                {{employer.active_jobs}} Active Job
+            {%endif%}
+        </div>
+    </div>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+      <i class="bi bi-check2-circle"></i> {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+<div class="card border-0 p-3 border-bottom bg-light text-primary" >
+    <div class="row">
+        <div class="col-5">
+            <h6 class="table-title">Title</h6>
+        </div>
+        <div class="col-2">
+            <h6 class="table-title">Applications</h6>
+        </div>
+        <div class="col-2">
+            <h6 class="table-title">Created & Expired</h6>
+        </div>
+        <div class="col-1">
+            <h6 class="table-title">Status</h6>
+        </div>
+        <div class="col-2">
+            <h6 class="table-title">Action</h6>
+        </div>
+
+    </div>
+</div>
+{% for job in jobposts %}
+<div class="card border-0 border-bottom my-3">
+    <div class="row">
+        <div class="col-5">
+            
+                <a href="{{ url_for('jobdetail', postid=job.id)}}" class="text-decoration-none">
+                    <strong>{{ job.job_title }}</strong>
+                </a>
+                <p class="ttitle text-muted">
+                    <i class="bi bi-geo-alt-fill small-text"></i>
+                    <span class="small-text">{{ job.full_address}}</span>
+                </p>
+        </div>
+        <div class="col-2">
+            <p class="ttitle text-muted small-text">
+                {{employer.count_applicant(job.id)}}
+                Applied
+            </p>
+        </div>
+        <div class="col-2">
+            <p class="ttitle text-muted small-text">
+                {{job.created_at.strftime('%Y-%B-%d')}}
+                <span class="text-danger">{{job.deadline.strftime('%Y-%B-%d')}}</span>
+            </p>
+        </div>
+        <div class="col-1">
+
+            <p class="ttitle text-muted fs-2">
+                {% if job.deadline.date() > employer.today %}
+                    <span data-toggle="tooltip" data-bs-placement="bottom" title="Active">
+                        <i class="bi bi-dot text-success"></i>
+                    </span>
+                    
+                {% elif job.deadline.date() == employer.today %}
+                <span data-toggle="tooltip" data-bs-placement="bottom" title="Active">
+                    <i class="bi bi-dot text-warning" title="Today is the deadline"></i>
+                </span>
+                {%else%}
+                <span data-toggle="tooltip" data-bs-placement="bottome" title="Inactive">
+                    <i class="bi bi-dot text-danger"></i>
+                </span>
+                {% endif %}
+                
+            </i></p>
+        </div>
+        <div class="col-2">
+            <a href="{{url_for('jobUpdate', jobid=job.id)}}" class="text-decoration-none">
+                <span data-toggle="tooltip" data-bs-placement="left" title="Edit">
+                    <i class="bi bi-pencil-square text-secondary"></i>
+                </span>
+            </a>
+            <span data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <span data-toggle="tooltip" data-bs-placement="right" title="Delete">
+                    <i class="bi bi-archive-fill text-danger"></i>
+                </span>
+            </span>
+        </div>
+        <div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="bi bi-trash3 fs-5"></i> Delete Post?
+                  </h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-danger fs-6"><i class="bi bi-exclamation-triangle-fill"></i> Are you sure you want to delete this post?</span>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                  <a href="{{url_for('jobDelete', jobid=job.id)}}" class="btn btn-danger">Yes</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+    </div>
+</div>
+{% endfor %}
+{% endblock%}
