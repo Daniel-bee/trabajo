@@ -1,0 +1,8 @@
+.btn, .card {
+    border-radius: 0;
+}
+.modal-content  {
+    -webkit-border-radius: 0px !important;
+    -moz-border-radius: 0px !important;
+    border-radius: 0px !important; 
+}
