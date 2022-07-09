@@ -8,4 +8,4 @@ install it:
 
 run it:
 
-python start.py
+```python start.py```
