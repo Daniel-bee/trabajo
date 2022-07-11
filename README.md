@@ -6,6 +6,7 @@
 * [Setup](#setup)
 * [Features](#features)
 * [CodeExample](#codeexample)
+* [Screenshots](#screenshots)
 
 ## General info
   Trabajo is a Job listing site specific to software industry positions. Candidates can search by job title and location, salary, date posted, and experience level.
@@ -122,3 +123,7 @@ def manageJobs():
     return render_template('jobs/manage_jobs.html', page='employerProfile', jobposts=jobposts, employer=employer)
 
 ```
+## Screenshots
+![Alt text](https://i.ibb.co/s62Rm94/2.png)
+![Alt text](https://i.ibb.co/DMXm45b/1.png)
+
