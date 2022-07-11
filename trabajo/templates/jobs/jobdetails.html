@@ -1,0 +1,154 @@
+{% extends './base.html' %}
+{% block header %}
+    <div class="py-4 text-start">
+        <h3 class="py-3">{{ jobpost.job_title }}</h3>
+        <span class="badged">{{ jobpost.job_type }}</span>
+    </div>
+{% endblock header%}
+{% block content %}
+<div class="row mt-3">
+    <div class="col-8">
+        <div class="py-3">
+            <div class="row">
+                <div class="col-2 mx-3">
+                    <img class="img-fluid" src="{{url_for('static', filename='profile_pics/'+jobpost.user.image_file)}}" alt="" style="width: 75px; height: 75px; ">
+                </div>
+                <div class="col-9">
+                    <ul class="list-inline mt-3">
+                        <li class="list-inline-item text-secondary list">
+                            <small><i class="bi bi-geo-alt"></i>
+                                {{ jobpost.full_address }}
+                            </small>
+                        </li>
+                        <li class="list-inline-item text-secondary list">
+                            <small><i class="bi bi-calendar2"></i> published: {{jobpost.created_at.strftime('%Y-%B-%d')}}</small>
+                        </li>
+                    </ul>
+                    <ul class="list-inline mt-3">
+                        <li class="list-inline-item text-info list">
+                            <small><i class="bi bi-envelope"></i> {{ jobpost.user.email}}</small>
+                        </li>
+ 
+                        <li class="list-inline-item text-secondary list">
+                            <small><i class="bi bi-telephone"></i> {{jobpost.user.phone_number}}</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div>
+        </div>
+        <div class="my-3">
+            <h5>Job Description
+                {% if jobpost.work_from %}
+                <span class="text-secondary fs-4" role="status" data-toggle="tooltip" data-bs-placement="left" title="Remote">
+                  <i class="bi bi-person-workspace"></i>
+                </span>
+                
+                {%endif%}
+            </h5>
+            <hr>
+            <p class="opacity-75">{{ jobpost.job_description|safe }}</p>
+            
+            {% set skills = jobpost.required_skill.split(',') %}
+            {% if jobpost.required_skill %}
+            <hr>
+                <h5>Required skills</h5>
+            {% for skill in skills %}
+               <span class="skill">{{skill}}</span>
+            {% endfor%}
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-4">
+          <div class="d-grid gap-2  mx-auto py-2">
+            {% if  current_user.role == 'candidate'%}
+                {% if  application(jobpost.id, current_user.id) %}
+                {% if checkApplicantStatus(jobpost.id, current_user.id)  not in [1, 2]%}
+                <a href="{{ url_for('jobReject', jobid=jobpost.id)}}" class="btn btn-outline-danger p-3 opacity-75 ">
+                    <i class="bi bi-send-dash"></i> Reject
+                </a>
+                {%endif%}
+                {%else%}
+                {% if checkApplicantStatus(jobpost.id, current_user.id)  not in [1, 2]%}
+                <a href="{{ url_for('jobApply', jobid=jobpost.id)}}" class="btn btn-outline-primary p-3 opacity-75 ">
+                    <i class="bi bi-send-plus"></i> Apply for job
+                </a>
+                {%endif%}
+                {%endif%}
+            {%endif%}
+            {% if  current_user.role == 'employer' and current_user.id == jobpost.employer_id %}
+            <button type="button" class="btn btn-outline-primary p-3 opacity-75"  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <span class="badge text-bg-secondary">{{job_applicant.count(jobpost.id)}}</span> Applicant
+            </button>
+            {%endif%}
+          </div>
+          <h5 class="py-3">Job Overview</h5>
+        <div class="card py-3 p-3">
+                <div class="card-body">
+                  <h5 class="card-title"><i class="bi bi-wallet"></i> Offerd Salary</h5>
+                  <small class="card-subtitle mb-2 ms-4 text-muted">${{jobpost.min_salary}} - ${{jobpost.max_salary}}</small>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-person"></i> Gender</h5>
+                    <small class="card-subtitle mb-2 ms-4 text-muted">{{jobpost.gender}}</small>
+                  </div>
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-check2-circle"></i> Experience</h5>
+                    <small class="card-subtitle mb-2 ms-4 text-muted">{{jobpost.experiance}}</small>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-mortarboard"></i> Qualification</h5>
+                    <small class="card-subtitle mb-2 ms-4 text-muted">{{jobpost.qualification}}</small>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-calendar"></i> Application Deadline</h5>
+                    <small class="card-subtitle mb-2 ms-4 text-danger">{{jobpost.deadline.strftime('%Y-%B-%d')}}</small>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" data-bs-backdrop="static" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+            <i class="bi bi-people-fill"></i>  Applicant
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+            {% for applicant_ in job_applicant.id %}
+            <a href="{{url_for('reviewApplicant', userid=applicant_.user_id, jobid=jobpost.id)}}" class="text-decoration-none">
+                <div class="row">
+                <div class="card d-flex flex-row align-items-center border-0 border-bottom companylistcard">
+                    <img src="{{url_for('static', filename='profile_pics/'+job_applicant.info(applicant_.user_id).image_file)}}" class="card-img-top rounded-circle" alt="..."  style="width:70px;height:70px; ">
+                    <div class="card-body">
+                    <h5 class="card-title text-secondary">
+                        <span>{{job_applicant.info(applicant_.user_id).first_name}} </span>
+                        <span> {{job_applicant.info(applicant_.user_id).last_name}}</span>
+                    </h5>
+                    {% if not applicant_.status %}
+                    <span class="badge bg-warning">Pending...</span>
+                    {%elif applicant_.status == 1%}
+                        <span class="badge bg-success">Accepted</span>
+                    {%elif applicant_.status > 1%}
+                        <span class="badge bg-danger">Rejected</span>
+                    {%endif%}
+                    <span class="table-title text-muted">{{job_applicant.info(applicant_.user_id).email}}</span>
+                    <span class="table-title"> | {{job_applicant.info(applicant_.user_id).phone_number}}</span>
+                    </div>
+                </div>
+                </div>
+             </a>
+            {%endfor%}
+          </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %} 

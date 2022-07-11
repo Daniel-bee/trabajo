@@ -1,0 +1,196 @@
+{% extends './base.html'%}
+{% block header %}
+<div class="row">
+    <div class="col-9 py-4 text-start mt-3">
+        <h3>{{ candidate.profile.first_name|capitalize}}</h3>
+        <small>
+            {{ candidate.profile.email|capitalize}}
+        </small>
+    </div>
+    <div class="col-3 py-4 mt-3">
+        {% if candidate.detail.resume %}
+        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="bi bi-file-earmark-pdf-fill text-danger"></i> Resume
+        </button>
+        {% endif%}
+    </div>
+</div>
+
+{% endblock%}
+{% block content %}
+<div class="row">
+    
+        <div class="card text-center col-4">
+            <div class="my-2 pt-4">
+                <img class="rounded-circle" src="{{url_for('static', filename='profile_pics/'+candidate.profile.image_file)}}" alt="" style="width: 150px; height: 150px;">
+            </div>
+            <div class="card-body">
+            <h4 class="card-title">{{ candidate.profile.first_name}} {{ candidate.profile.last_name}}</h4>
+            <div class="text-muted text-start pt-2">
+                <p>
+                    <i class="bi bi-geo-alt text-info"></i>
+                    <small>
+                     {{candidate.address.city}}
+                     {{candidate.address.country}}, 
+                     {{candidate.address.state}}
+                     {{candidate.address.zip_code}}
+                    </small>
+                </p>
+                <p>
+                    <i class="bi bi-telephone text-info"></i>
+                    <small>
+                        {{candidate.profile.phone_number}}
+                    </small>
+                </p>
+                <p>
+                    <i class="bi bi-envelope text-info"></i>
+                    <small>
+                        {{candidate.profile.email}}
+                    </small>
+                </p>
+                <p>
+                    <i class="bi bi-globe"></i>
+                    <small>
+                        <a href="{{candidate.social.website}}" target="_blank">
+                            {{candidate.social.website}}
+                        </a>
+                        
+                    </small>
+                </p>
+
+            </div>
+            </div>
+            <div class="fs-2 pb-3 border-top pt-2">
+                {% if candidate.social.google%}
+                <a href="{{candidate.social.google}}" target="_blank"><i class="bi bi-google text-secondary"></i></a>
+                <a href="{{candidate.social.facebook}}" target="_blank"><i class="bi bi-facebook text-warning"></i></a>
+                <a href="{{candidate.social.twitter}}" target="_blank"><i class="bi bi-twitter text-danger"></i></a>
+                <a href="{{candidate.social.linkedin}}" target="_blank"><i class="bi bi-linkedin text-info"></i></a>
+                {%endif%}
+            </div>
+        </div>
+        <div class="col-8">
+            {% if current_user.role == 'employer'%}
+            <div class="mb-3">
+                {% if candidate.application.status == 2%}
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#accept" >Accept</button>
+                {% elif candidate.application.status == 1 %}
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reject">Reject</button>
+                {%else%}
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#accept" >Accept</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reject">Reject</button>
+                {%endif%}
+        
+            {%endif%}
+            </div>
+            <div class="col">
+                <div class="card border-info mb-3 p-3">
+                    <div class="d-flex justify-content-evenly p-3 ">
+                        <div class="co-4 fs-4">
+                            {% if candidate.detail.gender == 'Male' %}
+                            <i class="bi bi-gender-male text-info"></i>
+                            {% else %}
+                            <i class="bi bi-gender-female text-info"></i>
+                            {% endif %}
+                            
+                            {{ candidate.detail.gender }}
+                        </div>
+                        <div class="co-4 fs-4"><i class="bi bi-mortarboard text-info"></i>
+                            {{ candidate.detail.education_level }}
+                        </div>
+                        <div class="co-4 fs-4"><i class="bi bi-patch-check text-info"></i>
+                            {{ candidate.detail.experiance }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="card my-3 p-3">
+                    <div class="text-muted">
+                        <h5>Candidte Description</h5>
+                        <hr>
+                    </div>
+                    <div>
+                        <p>
+                            {{ candidate.detail.about|safe }}
+                        </p>
+                    </div>
+                </div>
+                {% if candidate.detail.skill %}
+                {% set skills = candidate.detail.skill.split(',') %}
+                {% if skills %}
+                    <h5>Skills</h5>
+                {% endif %}
+                {% for skill in skills %}
+                   <span class="skill">{{skill}}</span>
+                {% endfor%}
+                {% endif %}
+            </div>
+        </div>
+</div>
+
+<div class="modal fade" id="accept" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <i class="bi bi-trash3 fs-5"></i> Accept Applicant?
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <span class="text-info fs-6 ms-0">
+                <i class="bi bi-info-circle-fill"></i> 
+                Are you sure you want Accept?
+            </span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">No</button>
+          <a href="{{url_for('acceptApplicant', userid=candidate.profile.id, jobid=candidate.jobid)}}" class="btn btn-outline-success">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="modal fade" id="reject" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <i class="bi bi-trash3 fs-5"></i> Reject Applicant?
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <span class="text-info fs-6 ms-0">
+                <i class="bi bi-info-circle-fill"></i> 
+                Are you sure you want Reject?
+            </span>
+        </div>
+        <div class="modal-footer">
+        
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">No</button>
+          <a href="{{url_for('rejectApplicant', userid=candidate.profile.id, jobid=candidate.jobid)}}" class="btn btn-outline-danger">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Resume -->
+  <div class="modal fade"  id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"> <i class="bi bi-file-earmark-pdf-fill text-danger"></i> Resume</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            {% if candidate.detail.resume %}
+            <iframe class="py-3" src="{{url_for('static', filename='/resume/'+candidate.detail.resume)}}" width="100%" height="500px">
+            </iframe>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

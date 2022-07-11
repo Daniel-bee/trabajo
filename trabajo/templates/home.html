@@ -1,0 +1,186 @@
+{% extends './base.html' %}
+{% block header %}
+<div class="pt-4 text-light">
+    <p class="h3 mt-3">The Easiest Way To Get Your New Job</p>
+    <p><small>A better career is out there. We'll help you find it to use.</small></p>
+
+</div>
+
+<div class="row justify-content-center">
+<div class="col-9 p-3 mb-3 searchcard">
+    <form method="POST" action="{{url_for('searchJobs')}}" novalidate>
+      {{ form.hidden_tag() }}
+        <div class="d-flex justify-content-center">
+            <div class="col-10 align-items-center searchinput">
+              {% if form.search.errors %}
+              {{ form.search(class="form-control is-invalid", placeholder="keyword")}}
+              <div class="invalid-feedback">
+                {% for error in form.search.errors %}
+                    {{ error }}
+                {% endfor %}
+              </div>
+              {% else %}
+               {{ form.search(class="form-control", placeholder="keywords...") }}
+              {% endif %}
+            </div>
+
+            <div class="col-1">
+                <button type="submit" class="btn btn-secondary searchbutton">
+                    SEARCH
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</div>
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-9 mt-3 ">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  {% for category, message in messages %}
+  {% if category == 'warning' %}
+  <div class="alert alert-{{ category }}">
+    <h6><i class="bi bi-emoji-frown"></i> {{ message }}</h6>
+    
+  </div>
+  {%else%}
+    <div class="alert alert-{{ category }}">
+      <i class="bi bi-check2-circle"></i> {{ message }}
+    </div>
+  {%endif%}
+  {% endfor %}
+{% endif %}
+{% endwith %}
+{% if jobposts.items %}
+        {% for jobpost in jobposts.items%}
+        {% if jobpost.deadline.date() >= today%}
+        <div class="card joblistcard">
+            <div class="card-body px-2">
+                <div class="row">
+                    <div class="col-2 d-flex align-items-center">
+                        <img class="img-fluid border  p-1 mx-3" src="{{url_for('static', filename='profile_pics/'+jobpost.user.image_file)}}" alt="" style="width:65px; height: 65px;">
+                    </div>
+                    <div class="col-8">
+                        <div>
+                          {% if jobpost.work_from %}
+                          <span class="text-secondary fs-4" role="status" data-toggle="tooltip" data-bs-placement="left" title="Remote">
+                            <i class="bi bi-person-workspace"></i>
+                          </span>
+                          
+                          {%endif%}
+                            <a href="{{ url_for('jobdetail', postid=jobpost.id)}}" class="link-primary h5 posttitle">{{ jobpost.job_title}}</a>
+                          
+                        </div>
+                        <ul class="list-inline mt-3">
+                            <li class="list-inline-item text-secondary list">
+                                <strong>
+                                  <a href="{{url_for('companyJobPost', companyName=jobpost.user.company_name)}}" class="text-decoration-none text-info">
+                                  <i class="bi bi-at"></i>{{ jobpost.user.company_name }}</a>
+                                </strong>
+                            </li>
+
+                            <li class="list-inline-item text-secondary list">
+                                <small><i class="bi bi-funnel"></i> {{jobpost.qualification}}</small>
+                            </li>
+                            <li class="list-inline-item text-secondary list">
+                                <small><i class="bi bi-calendar2"></i> published: {{jobpost.created_at.strftime('%Y-%B-%d')}}</small>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-2 d-flex align-items-center ">
+                        <div>
+                          <span class="badged rounded-pill">{{ jobpost.job_type }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+        {% endfor%}
+       {% if jobposts.items %}
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-end py-3">
+            <li class="page-item {% if jobposts.page == 1 %}disabled{% endif %}">
+              <a href="{{ url_for('home', page=jobposts.prev_num) }}" class="page-link">&laquo;</a>
+            </li>
+            
+            {% for page_num in jobposts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+              {% if page_num %}
+                {% if jobposts.page == page_num %}
+                  <li class="page-item"><a class="page-link active" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a></li>
+                {% else %}
+                  <li class="page-item"><a class="page-link" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a></li>
+                {% endif %}
+              {% else %}
+                ...
+              {% endif %}
+              {% endfor %}
+            
+            <li class="page-item {% if jobposts.page == jobposts.pages %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('home', page=jobposts.next_num) }}">&raquo;</a>
+            </li>
+          </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+          <strong><i class="bi bi-info-circle-fill"></i> No data available</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col mt-3 border-start">
+
+        <div class="card py-2 border-0 opacity-50">
+            <h5 class="mb-2 ps-3">Job Type</h5>
+
+            <ol class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">Remote</div>
+                </div>
+                <span class="badge bg-secondary rounded-pill">{{sidemenu.remote}}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">Freelance</div>
+                </div>
+                <span class="badge bg-secondary rounded-pill">{{sidemenu.freelance}}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">Full Time</div>
+                </div>
+                <span class="badge bg-secondary rounded-pill">{{sidemenu.fulltime}}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">Part Time</div>
+                </div>
+                <span class="badge bg-secondary rounded-pill">{{sidemenu.parttime}}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">Internship</div>
+                </div>
+                <span class="badge bg-secondary rounded-pill">{{sidemenu.internship}}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">Temporary</div>
+                </div>
+                <span class="badge bg-secondary rounded-pill">{{sidemenu.temporary}}</span>
+              </li>
+            </ol>
+        </div>
+      
+
+    </div>
+
+</div>
+{% endblock content%}

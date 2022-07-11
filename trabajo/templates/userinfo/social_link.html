@@ -1,0 +1,95 @@
+{% extends './base.html'%}
+{% block header %}
+    <div class="py-4 text-start mt-3">
+        <h3>Social Links</h3>
+        <h6></h6>
+    </div>
+{% endblock%}
+{% block profile %}
+<div class="text-muted mb-3">
+  <h5><i class="bi bi-link-45deg fs-5"></i> Social Links</h5>
+  <hr>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+<div class="card border-0 p-3">
+    <form method="POST" action="{{url_for('userSocial', userid=current_user.id)}}" class="row g-3" novalidate>
+      {{ social.hidden_tag() }}
+        <div class="col-md-6">
+          {{ social.website.label(class="form-label") }}
+          {% if social.website.errors %}
+            {{ social.website(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in social.website.errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% else %}
+              {{ social.website(class="form-control") }}
+          {% endif %}
+          </div>
+          <div class="col-md-6">
+            {{ social.facebook.label(class="form-label") }}
+            {% if social.facebook.errors %}
+              {{ social.facebook(class="form-control is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in social.facebook.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% else %}
+                {{ social.facebook(class="form-control") }}
+            {% endif %}
+            </div>
+            <div class="col-md-6">
+              {{ social.linkedin.label(class="form-label") }}
+              {% if social.linkedin.errors %}
+                {{ social.linkedin(class="form-control is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in social.linkedin.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% else %}
+                  {{ social.linkedin(class="form-control") }}
+              {% endif %}
+              </div>
+              <div class="col-md-6">
+                {{ social.twitter.label(class="form-label") }}
+                {% if social.twitter.errors %}
+                  {{ social.twitter(class="form-control is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in social.twitter.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                    {{ social.twitter(class="form-control") }}
+                {% endif %}
+                </div>
+                <div class="col-md-12">
+                  {{ social.google.label(class="form-label") }}
+                  {% if social.google.errors %}
+                    {{ social.google(class="form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in social.google.errors %}
+                        {{ error }}
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                      {{ social.google(class="form-control") }}
+                  {% endif %}
+                  </div>
+        <div class="col-12">
+          {{ social.submit(class="btn btn-outline-info float-end")}}
+        </div>
+      </form>
+</div>
+{% endblock %}

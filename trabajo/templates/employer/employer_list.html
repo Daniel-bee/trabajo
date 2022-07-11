@@ -1,0 +1,87 @@
+{% extends './base.html'%}
+{% block header %}
+    <div class="py-4 text-start">
+      <form method="POST" action="{{url_for('searchEmployer')}}" novalidate>
+        {{ form.hidden_tag() }}
+          <div class="d-flex justify-content-center mt-3">
+              <div class="col-10 align-items-center searchinput">
+                {% if form.search.errors %}
+                {{ form.search(class="form-control is-invalid", placeholder="Search employer")}}
+                <div class="invalid-feedback">
+                  {% for error in form.search.errors %}
+                      {{ error }}
+                  {% endfor %}
+                </div>
+                {% else %}
+                 {{ form.search(class="form-control", placeholder="Search employer") }}
+                {% endif %}
+              </div>
+  
+              <div class="col-1">
+                  <button type="submit" class="btn btn-secondary searchbutton">
+                      SEARCH
+                  </button>
+              </div>
+          </div>
+      </form>
+    </div>
+{% endblock%}
+{% block content %}
+<div class="row ">
+  {% if employer.profile.items %}
+    {% for profile in employer.profile.items %}
+    {% if profile.role == 'employer'%}
+    <div class="card d-flex flex-row p-2 align-items-center col-3 border-0 border-start companylistcard mt-3 bg-light">
+        <img src="{{url_for('static', filename='profile_pics/'+profile.image_file)}}" class="card-img-top" alt="..."  style="width:70px;height:70px; ">
+        <div class="card-body">
+          <h5 class="card-title">
+            <a href="{{url_for('employerProfileDetail', userid=profile.id)}}" class="text-decoration-none text-secondary">
+              {{ profile.company_name}}
+            </a>
+          </h5>
+          <h6></h6>
+          {% if employer.link(profile.id).twitter%}
+          <a href="{{employer.link(profile.id).twitter}}" target="_blank" class="text-secondary"><i class="bi bi-twitter"></i></a>
+          <a href="{{employer.link(profile.id).linkedin}}" target="_blank" class="text-secondary"><i class="bi bi-linkedin"></i></a>
+          <a href="{{employer.link(profile.id).facebook}}" target="_blank" class="text-secondary"><i class="bi bi-facebook"></i></a>
+          {%endif%}
+          </div>
+    </div>
+  {%endif%}
+  {% endfor %}
+  {% if employer.profile.page %}
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-end py-3">
+      <li class="page-item {% if employer.profile.page == 1 %}disabled{% endif %}">
+        <a href="{{ url_for('employerList', page=employer.profile.prev_num) }}" class="page-link">&laquo;</a>
+      </li>
+      
+      {% for page_num in employer.profile.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+          {% if employer.profile.page == page_num %}
+            <li class="page-item"><a class="page-link active" href="{{ url_for('employerList', page=page_num) }}">{{ page_num }}</a></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('employerList', page=page_num) }}">{{ page_num }}</a></li>
+          {% endif %}
+        {% else %}
+          ...
+        {% endif %}
+        {% endfor %}
+      
+      <li class="page-item {% if employer.profile.page == employer.profile.pages %}disabled{% endif %}">
+        <a class="page-link" href="{{ url_for('employerList', page=employer.profile.next_num) }}">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
+  {% endif %}
+  {% else %}
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <strong><i class="bi bi-info-circle-fill"></i> No data available</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endif %}
+</div>
+
+
+
+{% endblock %}

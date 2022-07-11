@@ -1,0 +1,113 @@
+{% extends './base.html'%}
+
+{% block content %}
+  <div class="row justify-content-center mt-3">
+    <div class="col-7">
+      <div class="card p-3">
+        <h4><i class="bi bi-building"></i> Sign Up</h4>
+        <small>EMPLOYER</small>
+        <hr>
+ <form method="POST" action="" class="row g-3 news" novalidate>
+  {{ employerForm.hidden_tag() }}
+  <div class="col-md-6">
+    {{ employerForm.first_name.label(class="form-label") }}
+    {% if employerForm.first_name.errors %}
+      {{ employerForm.first_name(class="form-control is-invalid") }}
+      <div class="invalid-feedback">
+        {% for error in employerForm.first_name.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% else %}
+        {{ employerForm.first_name(class="form-control") }}
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    {{ employerForm.last_name.label(class="form-label") }}
+    {% if employerForm.last_name.errors %}
+      {{ employerForm.last_name(class="form-control is-invalid") }}
+      <div class="invalid-feedback">
+        {% for error in employerForm.last_name.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% else %}
+        {{ employerForm.last_name(class="form-control") }}
+    {% endif %}
+  </div>
+  <div class="col-md-12">
+    {{ employerForm.company_name.label(class="form-label") }}
+    {% if employerForm.company_name.errors %}
+      {{ employerForm.company_name(class="form-control is-invalid") }}
+      <div class="invalid-feedback">
+        {% for error in employerForm.company_name.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% else %}
+        {{ employerForm.company_name(class="form-control") }}
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    {{ employerForm.email.label(class="form-label") }}
+    {% if employerForm.email.errors %}
+      {{ employerForm.email(class="form-control is-invalid") }}
+      <div class="invalid-feedback">
+        {% for error in employerForm.email.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% else %}
+        {{ employerForm.email(class="form-control") }}
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    {{ employerForm.phone_number.label(class="form-label") }}
+    {% if employerForm.phone_number.errors %}
+      {{ employerForm.phone_number(class="form-control is-invalid") }}
+      <div class="invalid-feedback">
+        {% for error in employerForm.phone_number.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% else %}
+        {{ employerForm.phone_number(class="form-control") }}
+    {% endif %}
+  </div>
+
+  <div class="col-md-12">
+    {{ employerForm.password.label(class="form-label") }}
+    {% if employerForm.password.errors %}
+      {{ employerForm.password(class="form-control is-invalid") }}
+      <div class="invalid-feedback">
+        {% for error in employerForm.password.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% else %}
+        {{ employerForm.password(class="form-control") }}
+    {% endif %}
+  </div>
+  <div class="col-md-12">
+    {{ employerForm.confirm_password.label(class="form-label") }}
+    {% if employerForm.confirm_password.errors %}
+      {{ employerForm.confirm_password(class="form-control is-invalid") }}
+      <div class="invalid-feedback">
+        {% for error in employerForm.confirm_password.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% else %}
+        {{ employerForm.confirm_password(class="form-control") }}
+    {% endif %}
+    </div>
+
+  <div class="col-12">
+    {{ employerForm.submit(class="btn btn-outline-info employer") }}
+  </div>
+ </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

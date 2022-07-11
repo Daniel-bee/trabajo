@@ -1,0 +1,215 @@
+{% extends './base.html' %}
+{% block header %}
+    <div class="py-4 text-start mt-3">
+        <h3>Job Post Update</h3>
+        <h6>{{ current_user.company_name|capitalize}}</h6>
+    </div>
+{% endblock%}
+{% block profile %}
+<div class="text-muted mb-3">
+  <h5><i class="bi bi-sticky fs-5"></i> Post Update</h5>
+  <hr>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        <i class="bi bi-check2-circle"></i> {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+</div>
+          <div class="card border-0">
+              <div class="card-body d-flex">
+                <form class="row g-3" method="POST" action="{{url_for('jobUpdate', jobid=jobpost.id)}}"  novalidate>
+        
+                  {{ form.hidden_tag() }}
+                  <div class="form-check form-switch">
+                    {% if jobpost.work_from %}
+                    <input class="form-check-input" name="remotejob" type="checkbox" role="switch" id="flexSwitch" value="1" checked>
+                    <label class="form-check-label text-info" for="flexSwitch">Remote Work?</label>
+                    {%else%}
+                    <input class="form-check-input" name="remotejob" type="checkbox" role="switch" id="flexSwitch" value="1">
+                    <label class="form-check-label text-info" for="flexSwitch">Remote Work?</label>
+                    {%endif%}
+                  </div>
+                  <div class="col-md-12">
+                    {{ form.job_title.label(class="form-label")}}
+                    {% if form.job_title.errors %}
+                    {{ form.job_title(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.job_title.errors %}
+                          {{ error }}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.job_title(class="form-control") }}
+                    {% endif %}
+                  </div>
+                  <div class="col-md-12">
+                    {{ form.job_type.label(class="form-label")}}
+                    {% if form.job_type.errors %}
+                    {{ form.job_type.option(class="form-select is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.job_type.errors %}
+                          {{error}}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.job_type(class="form-select")}}
+                    {% endif %}
+                  </div>
+                  <div class="mb-3 ">
+                    {{ form.job_description.label(class="form-label")}}
+                    {% if form.job_description.errors %}
+                    {{ form.job_description(class="form-control is-invalid", rows=5)}}
+                    <div class="invalid-feedback">
+                      {% for error in form.job_description.errors %}
+                          {{error}}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.job_description(class="form-control", rows="5")}}
+                    {% endif %}
+                  </div>
+                  <div class="col-md-12">
+                    {{ form.deadline.label(class="form-label")}}
+                    {% if form.deadline.errors %}
+                    {{ form.deadline(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.deadline.errors %}
+                          {{error}}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.deadline(class="form-control")}}
+                    {% endif %}
+                  </div>
+                  <div class="h5 pb-1 mb-1 text-info border-bottom border-light">
+                    Career Level
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.experiance.label(class="form-label")}}
+                    {% if form.experiance.errors %}
+                    {{ form.experiance(class="form-select is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.experiance.errors %}
+                          {{error}}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.experiance(class="form-select")}}
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.qualification.label(class="form-label")}}
+                    {% if form.qualification.errors %}
+                    {{ form.qualification(class="form-select is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.qualification.errors %}
+                          {{error}}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.qualification(class="form-select")}}
+                    {% endif %}
+                  </div>
+                  <hr>
+                  <div class="col-md-6 gender">
+                    {{form.gender.label(class="form-label")}}<br>
+                    {% if form.gender.errors %}
+                    {% for radio in form.gender %}
+                    <div class="form-check form-check-inline">
+                      {{radio(class="form-check-input is-invalid" )}}
+                      {{radio.label(class="form-check-label")}}
+                    </div>
+                    {% endfor %}
+                      <div class="invalid-feedback">
+                        {% for error in form.gender.errors %}
+                            {{error}}
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                    {% for radio in form.gender %}
+                    <div class="form-check form-check-inline">
+                      {{radio(class="form-check-input" )}}
+                      {{radio.label(class="form-check-label")}}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                  <div class="col-md-12">
+                    <div class="text-muted ms-a">
+                      <span id="addSkill" class="addskill  bg-info p-1"> 
+                        <span class="bi bi-plus-circle-dotted text-white"> Skills</span>
+                      </span>
+                      <hr>
+                    </div>
+                    <div id="appendField" class="my-2 col-7">
+                        {% set skills = skill.split(',') %}
+                        {% set index = 0 %}
+                        {% if skills|length > 0%}
+                          {% for skill in skills %}
+                          {% set index = loop.index %}
+                          <div id="fieldremove{{index}}">
+                            <input class="form-control my-2" value="{{skill}}" type="text" name="skill[]" placeholder="Add skills" required>
+                            <i id="{{index}}" class="remove userskill bi bi-x-octagon skillremove "></i>
+                          </div>
+          
+                          {% endfor%}
+                        {%else%}
+          
+                        {%endif%}
+                    </div>
+                  </div>
+                  <div class="h5 pb-1 mb-1 text-info border-bottom border-light">
+                    Salary
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.min_salary.label(class="form-label")}}
+                    {% if form.min_salary.errors %}
+                    {{ form.min_salary(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.min_salary.errors %}
+                          {{error}}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.min_salary(class="form-control")}}
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.max_salary.label(class="form-label")}}
+                    {% if form.max_salary.errors %}
+                    {{ form.max_salary(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.max_salary.errors %}
+                          {{error}}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.max_salary(class="form-control")}}
+                    {% endif %}
+                  </div>
+                  <div class="col-md-12">
+                    {{ form.full_address.label(class="form-label")}}
+                    {% if form.full_address.errors %}
+                    {{ form.full_address(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.full_address.errors %}
+                          {{error}}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                     {{ form.full_address(class="form-control")}}
+                    {% endif %}
+                  <div class="col-12 mt-3">
+                    <button class="btn btn-outline-success">Update Post</button>
+                  </div>
+                  {{ ckeditor.load(pkg_type="basic") }}
+                  {{ ckeditor.config(name='job_description') }}
+                  
+                </form>
+              </div>
+          </div>
+{% endblock%}

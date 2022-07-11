@@ -1,0 +1,82 @@
+{% extends './base.html'%}
+{% block header %}
+    <div class="py-4 text-start mt-3">
+        <h3>Address</h3>
+        <h6></h6>
+    </div>
+{% endblock%}
+{% block profile %}
+<div class="text-muted mb-3">
+  <h5><i class="bi bi-geo-alt fs-5"></i> Address</h5>
+  <hr>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+<div class="card border-0 p-3">
+    <form method="POST" action="{{url_for('userAddress', userid=current_user.id)}}" class="row g-3" novalidate>
+        {{ location.hidden_tag() }}
+        <div class="col-md-6">
+          {{ location.country.label(class="form-label") }}
+          {% if location.country.errors %}
+            {{ location.country(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in location.country.errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% else %}
+              {{ location.country(class="form-control") }}
+          {% endif %}
+          </div>
+          <div class="col-md-6">
+          {{ location.state.label(class="form-label") }}
+          {% if location.state.errors %}
+            {{ location.state(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in location.state.errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% else %}
+              {{ location.state(class="form-control") }}
+          {% endif %}
+          </div>
+          <div class="col-md-6">
+          {{ location.city.label(class="form-label") }}
+          {% if location.city.errors %}
+            {{ location.city(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in location.city.errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% else %}
+              {{ location.city(class="form-control") }}
+          {% endif %}
+          </div>
+          <div class="col-md-6">
+          {{ location.zip_code.label(class="form-label") }}
+          {% if location.zip_code.errors %}
+            {{ location.zip_code(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in location.zip_code.errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% else %}
+              {{ location.zip_code(class="form-control") }}
+          {% endif %}
+          </div>
+        <div class="col-12">
+          {{ location.submit(class="btn btn-outline-info float-end")}}
+        </div>
+      </form>
+</div>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends './base.html'%}
+{% block header %}
+    <div class="py-4 text-start mt-3">
+        <h3>Profile</h3>
+        <h6>{{ current_user.first_name|capitalize}} 
+          {{ current_user.last_name|capitalize}}
+        </h6>
+    </div>
+{% endblock%}
+{% block profile %}
+<div class="text-muted mb-3">
+  <h5>My Profile</h5>
+  <hr>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+<div class="card border-0 p-3">
+    <form class="row g-3" method="POST" action="{{ url_for('candidateProfileDetail', userid=current_user.id) }}" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="col-md-6">
+            {{ form.experiance.label(class="form-label")}}
+            {% if form.experiance.errors %}
+            {{ form.experiance(class="form-select is-invalid")}}
+            <div class="invalid-feedback">
+              {% for error in form.experiance.errors %}
+                  {{error}}
+              {% endfor %}
+            </div>
+            {% else %}
+             {{ form.experiance(class="form-select")}}
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            {{ form.qualification.label(class="form-label")}}
+            {% if form.qualification.errors %}
+            {{ form.qualification(class="form-select is-invalid")}}
+            <div class="invalid-feedback">
+              {% for error in form.qualification.errors %}
+                  {{error}}
+              {% endfor %}
+            </div>
+            {% else %}
+             {{ form.qualification(class="form-select")}}
+            {% endif %}
+          </div>
+          <div class="col-md-6 gender">
+            {{form.gender.label(class="form-label")}}<br>
+            {% if form.gender.errors %}
+            {% for radio in form.gender %}
+            <div class="form-check form-check-inline">
+              {{radio(class="form-check-input is-invalid" )}}
+              {{radio.label(class="form-check-label")}}
+            </div>
+            {% endfor %}
+              <div class="invalid-feedback">
+                {% for error in form.gender.errors %}
+                    {{error}}
+                {% endfor %}
+              </div>
+            {% else %}
+            {% for radio in form.gender %}
+            <div class="form-check form-check-inline">
+              {{radio(class="form-check-input" )}}
+              {{radio.label(class="form-check-label")}}
+            </div>
+            {% endfor %}
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            {{ form.min_salary.label(class="form-label")}}
+            {% if form.min_salary.errors %}
+            {{ form.min_salary(class="form-control is-invalid")}}
+            <div class="invalid-feedback">
+              {% for error in form.min_salary.errors %}
+                  {{error}}
+              {% endfor %}
+            </div>
+            {% else %}
+             {{ form.min_salary(class="form-control")}}
+            {% endif %}
+          </div>
+          <div class="col-md-12">
+            {{ form.about.label(class="form-label")}}
+            {% if form.about.errors %}
+            {{ form.about(class="form-control is-invalid", rows=5)}}
+            <div class="invalid-feedback">
+              {% for error in form.about.errors %}
+                  {{error}}
+              {% endfor %}
+            </div>
+            {% else %}
+             {{ form.about(class="form-control", rows=5)}}
+            {% endif %}
+          </div>
+          <div class="col-md-12">
+            {{ form.birth_date.label(class="form-label")}}
+            {% if form.birth_date.errors %}
+            {{ form.birth_date(class="form-control is-invalid")}}
+            <div class="invalid-feedback">
+              {% for error in form.birth_date.errors %}
+                  {{error}}
+              {% endfor %}
+            </div>
+            {% else %}
+             {{ form.birth_date(class="form-control")}}
+            {% endif %}
+          </div>
+          <div class="col-md-12">
+            <div class="text-muted ">
+              <span id="addSkill" class="addskill  bg-info p-1"> 
+                <span class="bi bi-plus-circle-dotted text-white"> Skills</span>
+              </span>
+              <hr>
+            </div>
+            <div id="appendField" class="my-2 col-7">
+              {% set skills = skill.split(',') %}
+              {% set index = 0 %}
+              {% if skills|length > 0%}
+                {% for skill in skills %}
+                {% set index = loop.index %}
+                <div id="fieldremove{{index}}">
+                  <input class="form-control my-2" value="{{skill}}" type="text" name="skill[]" placeholder="Add skills" required>
+                  <i id="{{index}}" class="remove userskill bi bi-x-octagon skillremove "></i>
+                </div>
+
+                {% endfor%}
+              {%else%}
+
+              {%endif%}
+
+            </div>
+
+          </div>
+        <div class="col-12">
+          {{ form.submit(class="btn btn-outline-info")}}
+        </div>
+        {{ ckeditor.load(pkg_type="basic") }}
+        {{ ckeditor.config(name='job_description') }}
+      </form>
+</div>
+{% endblock %}
