@@ -3,6 +3,7 @@
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
+* [Features](#features)
 
 ## General info
   Trabajo is a Job listing site specific to software industry positions. Candidates can search by job title and location, salary, date posted, and experience level.
@@ -40,3 +41,12 @@ pip3 install -r requirements.txt
 python start.py
 
 ```
+## Features
+  - Creating an account as a candidate and Employer
+  - Employer: post jobs
+  - Candidate: apply for the post
+  - Candidate: follow Employers
+  - Employer: Accept or reject an applicant
+  - Sending email
+  - user authentication
+
