@@ -125,5 +125,6 @@ def manageJobs():
 ```
 ## Screenshots
 ![Alt text](https://i.ibb.co/s62Rm94/2.png)
+
 ![Alt text](https://i.ibb.co/DMXm45b/1.png)
 
