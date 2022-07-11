@@ -4,7 +4,7 @@
 * [Technologies](#technologies)
 * [Setup](#setup)
 * [Features](#features)
-* [Code Example](#code example)
+* [CodeExample](#codeexample)
 
 ## General info
   Trabajo is a Job listing site specific to software industry positions. Candidates can search by job title and location, salary, date posted, and experience level.
