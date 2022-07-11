@@ -1,4 +1,5 @@
 # Trabajo
+![alt text](http://url/to/https://picsum.photos/id/237/200/300)
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
