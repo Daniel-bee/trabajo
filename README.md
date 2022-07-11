@@ -1,6 +1,5 @@
 # Trabajo
-![Alt text](https://ibb.co/KGty5D0)
-
+![Alt text](https://i.ibb.co/kyLcGJH/Screenshot-from-2022-07-11-10-46-31.png)
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
