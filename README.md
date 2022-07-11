@@ -1,5 +1,5 @@
 # Trabajo
-![alt text](http://url/to/https://picsum.photos/id/237/200/300)
+<img src="/https://picsum.photos/id/237/200/300" alt="Alt text" title="Optional title">
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
