@@ -51,7 +51,7 @@ python start.py
   - Sending email
   - user authentication
 
-## Code Example
+## CodeExample
 ```
 route to create new job
 @app.route('/jobpost', methods=['GET', 'POST'])
