@@ -1,5 +1,5 @@
 # Trabajo
-![Alt text](https://picsum.photos/id/237/200/300)
+![Alt text](https://ibb.co/KGty5D0)
 
 ## Table of contents
 * [General info](#general-info)
