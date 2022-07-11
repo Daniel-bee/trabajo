@@ -4,6 +4,7 @@
 * [Technologies](#technologies)
 * [Setup](#setup)
 * [Features](#features)
+* [Code Example](#code example)
 
 ## General info
   Trabajo is a Job listing site specific to software industry positions. Candidates can search by job title and location, salary, date posted, and experience level.
@@ -50,3 +51,73 @@ python start.py
   - Sending email
   - user authentication
 
+## Code Example
+```
+route to create new job
+@app.route('/jobpost', methods=['GET', 'POST'])
+@login_required
+def jobpost():
+    form = jobPostForm()
+    
+    if form.validate_on_submit():
+        skill_list = request.form.getlist('skill[]')
+        skill_str = ','.join(map(str, skill_list))
+        remote = 0
+        if request.form.get('remotejob'):
+            remote = int(request.form.get('remotejob'))
+        jobpost = JobPost(
+                job_title= form.job_title.data, 
+                job_description = form.job_description.data,
+                job_type = form.job_type.data,
+                experiance = form.experiance.data,
+                gender = form.gender.data,
+                full_address = form.full_address.data,
+                required_skill = skill_str,
+                qualification = form.qualification.data,
+                deadline = form.deadline.data,
+                work_from = remote,
+                min_salary = form.min_salary.data,
+                max_salary = form.max_salary.data,
+                user = current_user
+        )
+        db.session.add(jobpost)
+        db.session.commit()
+        flash('Your post has been created successfully!', 'success')
+        return redirect(url_for('home'))
+       
+    return render_template('jobs/jobpost.html', page='employerProfile', form=form)
+
+```
+```
+route that manage job post
+def countApplicant(jobid):
+    applicant = JobApply.query.filter_by(job_id=jobid).all()
+    if applicant:
+        return len(applicant)
+    return 0
+
+@app.route('/manageJobs')
+@login_required
+def manageJobs():
+    jobposts = JobPost.query.filter_by(employer_id=current_user.id).order_by(JobPost.created_at.desc()).all()
+    now = datetime.now()
+    todayWithoutTime = now.date()
+    if current_user.role == 'employer':
+        posts = JobPost.query.filter_by(employer_id=current_user.id).all()
+        active_jobs = 0
+        for post in posts:
+            deadline =  post.deadline.date()
+            current_datetime = datetime.now()
+            today = current_datetime.date()
+            if deadline > today:
+                active_jobs += 1
+    employer = {
+        'total_follower': EmployerFollower.query.filter_by(employer_id=current_user.id).count(),
+        'total_view': EmployerView.query.filter_by(employer_id=current_user.id).count(),
+        'active_jobs': active_jobs,
+        'today': todayWithoutTime,
+        'count_applicant': countApplicant
+    }
+    return render_template('jobs/manage_jobs.html', page='employerProfile', jobposts=jobposts, employer=employer)
+
+```
