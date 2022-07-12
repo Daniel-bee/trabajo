@@ -30,7 +30,7 @@ Project is created with:
   - phonenumbers 8.12.51
   - Pillow 9.1.1
 
-## setup
+## Setup
 To run this project
 
 ```
@@ -50,7 +50,7 @@ python start.py
   - Candidate: apply for the post
   - Candidate: follow Employers
   - Employer: Accept or reject an applicant
-  - Sending email
+  - Sending email as a general user
   - user authentication
 
 ## CodeExample
